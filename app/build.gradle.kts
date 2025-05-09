@@ -40,7 +40,17 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.coil.compose)
+    implementation (libs.ui)
+    implementation (libs.material3)
+    implementation (libs.ui.tooling.preview)
+    implementation(libs.retrofit)
+    implementation(libs.converter.moshi)
+    implementation(libs.moshi)
+    implementation(libs.moshi.kotlin)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.logging.interceptor)
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

@@ -1,4 +1,7 @@
 package com.example.metgalleryproject.viewmodel
 
-class FavouritesViewModel {
+import androidx.lifecycle.ViewModel
+
+class FavouritesViewModel : ViewModel() {
 }
+

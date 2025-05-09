@@ -1,4 +1,11 @@
 package com.example.metgalleryproject.data.model
 
-class ArtObject {
-}
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class ArtObject(
+    val id: Int,
+    val title: String,
+    val artist: String,
+    val imageUrl: String
+)
