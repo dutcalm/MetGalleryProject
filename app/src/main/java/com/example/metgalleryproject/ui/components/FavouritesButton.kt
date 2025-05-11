@@ -1,23 +1,27 @@
 package com.example.metgalleryproject.ui.components
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.metgalleryproject.data.model.ArtObject
 import com.example.metgalleryproject.viewmodel.FavouritesViewModel
 
 @Composable
-fun FavouritesButton(art: ArtObject, viewModel: FavouritesViewModel = viewModel()) {
-    val isFavorite = viewModel.favouriteArtObjects.value.contains(art)
+fun FavouritesButton(
+    art: ArtObject,
+    viewModel: FavouritesViewModel
+) {
+    val isFavorite = viewModel.isFavorite(art)
 
-    Button(
+    IconButton(
         onClick = {
             if (isFavorite) {
                 viewModel.removeFromFavorites(art)
@@ -25,10 +29,14 @@ fun FavouritesButton(art: ArtObject, viewModel: FavouritesViewModel = viewModel(
                 viewModel.addToFavorites(art)
             }
         },
-        modifier = Modifier.padding(16.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = if (isFavorite) Color.Gray else Color.Red)
+        modifier = Modifier.padding(8.dp)
     ) {
-        Text(text = if (isFavorite) "Remove from Favorites" else "Add to Favorites")
+        Icon(
+            imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+            contentDescription = if (isFavorite) "Favorite" else "Not Favorite",
+            tint = if (isFavorite) Color(0xFFFF1744) else Color.White,
+            modifier = Modifier.size(35.dp)
+        )
     }
 }
+

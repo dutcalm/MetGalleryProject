@@ -40,6 +40,11 @@ android {
 }
 
 dependencies {
+    implementation(libs.moshi.kotlin.v1151)
+    implementation(libs.okhttp)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.coil.compose)
     implementation (libs.ui)
     implementation (libs.material3)
@@ -67,3 +72,4 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
+
