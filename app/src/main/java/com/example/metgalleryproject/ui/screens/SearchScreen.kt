@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.metgalleryproject.ui.components.CustomLoadingIndicator
 import com.example.metgalleryproject.ui.components.SearchButton
 import com.example.metgalleryproject.viewmodel.FavouritesViewModel
 import com.example.metgalleryproject.viewmodel.SearchViewModel
@@ -90,13 +91,14 @@ fun SearchScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             val loadState = searchResults.loadState.refresh
 
             if (loadState is LoadState.Loading && hasSearched.value) {
                 item {
-                    Text("Loading...", modifier = Modifier.padding(16.dp))
+                    CustomLoadingIndicator()
                 }
             }
 

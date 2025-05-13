@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,6 +30,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Scale
 import com.example.metgalleryproject.data.model.ArtObject
+import com.example.metgalleryproject.ui.components.CustomLoadingIndicator
 import com.example.metgalleryproject.ui.components.FavouritesButton
 import com.example.metgalleryproject.viewmodel.FavouritesViewModel
 import com.example.metgalleryproject.viewmodel.HomeViewModel
@@ -65,13 +67,28 @@ fun HomeScreen(
                         modifier = Modifier.padding(vertical = 4.dp)
                     )
                 } else {
-                    ArtItemPlaceholder()
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CustomLoadingIndicator()
+                    }
                 }
             }
 
             when (val state = lazyPagingItems.loadState.refresh) {
                 is androidx.paging.LoadState.Loading -> {
-                    item { LoadingItem() }
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CustomLoadingIndicator()
+                        }
+                    }
                 }
                 is androidx.paging.LoadState.Error -> {
                     item { ErrorItem("Loading error: ${state.error.localizedMessage}") }
@@ -81,7 +98,16 @@ fun HomeScreen(
 
             when (val state = lazyPagingItems.loadState.append) {
                 is androidx.paging.LoadState.Loading -> {
-                    item { LoadingItem() }
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CustomLoadingIndicator()
+                        }
+                    }
                 }
                 is androidx.paging.LoadState.Error -> {
                     item { ErrorItem("Loading error: ${state.error.localizedMessage}") }
@@ -89,30 +115,6 @@ fun HomeScreen(
                 else -> {}
             }
         }
-    }
-}
-
-
-@Composable
-fun ArtItemPlaceholder() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        Text("Loading", style = MaterialTheme.typography.bodyMedium)
-    }
-}
-
-@Composable
-fun LoadingItem() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text("Loading")
     }
 }
 
@@ -128,7 +130,6 @@ fun ErrorItem(message: String) {
     }
 }
 
-
 @Composable
 fun ArtItem(art: ArtObject, navController: NavController, viewModel: FavouritesViewModel) {
     val painter = rememberAsyncImagePainter(
@@ -139,8 +140,6 @@ fun ArtItem(art: ArtObject, navController: NavController, viewModel: FavouritesV
             .scale(Scale.FILL)
             .build()
     )
-
-
 
     Column(
         modifier = Modifier
