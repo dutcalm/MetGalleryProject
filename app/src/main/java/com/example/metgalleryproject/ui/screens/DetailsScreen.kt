@@ -39,7 +39,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.metgalleryproject.ui.components.FavouritesButton
 import com.example.metgalleryproject.viewmodel.DetailsViewModel
@@ -47,7 +46,7 @@ import com.example.metgalleryproject.viewmodel.FavouritesViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun DetailsScreen(navController: NavController, artId: Int, viewModel: DetailsViewModel = viewModel(), favouritesViewModel: FavouritesViewModel) {
+fun DetailsScreen(artId: Int, viewModel: DetailsViewModel = viewModel(), favouritesViewModel: FavouritesViewModel) {
 
     val artDetails by viewModel.artDetails.collectAsState()
 

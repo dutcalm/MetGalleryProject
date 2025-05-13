@@ -71,7 +71,7 @@ fun HomeScreen(
 
             when (val state = lazyPagingItems.loadState.refresh) {
                 is androidx.paging.LoadState.Loading -> {
-                    item { LoadingItem("Loading artworks") }
+                    item { LoadingItem() }
                 }
                 is androidx.paging.LoadState.Error -> {
                     item { ErrorItem("Loading error: ${state.error.localizedMessage}") }
@@ -81,7 +81,7 @@ fun HomeScreen(
 
             when (val state = lazyPagingItems.loadState.append) {
                 is androidx.paging.LoadState.Loading -> {
-                    item { LoadingItem("Loading more artworks") }
+                    item { LoadingItem() }
                 }
                 is androidx.paging.LoadState.Error -> {
                     item { ErrorItem("Loading error: ${state.error.localizedMessage}") }
@@ -105,7 +105,7 @@ fun ArtItemPlaceholder() {
 }
 
 @Composable
-fun LoadingItem(string: String) {
+fun LoadingItem() {
     Column(
         modifier = Modifier
             .fillMaxWidth()

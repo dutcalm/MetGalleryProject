@@ -12,9 +12,6 @@ import kotlinx.coroutines.withContext
 
 class MetRepository(private val api: MetMuseumApi) {
 
-    private val maxResults = 10
-
-
     fun searchArtObjects(query: String): Flow<PagingData<ArtObject>> {
         return Pager(
             config = PagingConfig(pageSize = 20),

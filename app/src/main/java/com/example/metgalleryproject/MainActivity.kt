@@ -73,7 +73,8 @@ class MainActivity : ComponentActivity() {
                                 factory = DetailsViewModelFactory(repository)
                             )
                             detailsViewModel.fetchArtDetails(artId)
-                            DetailsScreen(artId = artId, viewModel = detailsViewModel, navController = navController, favouritesViewModel = favouritesViewModel)
+                            DetailsScreen(artId = artId, viewModel = detailsViewModel,
+                                favouritesViewModel = favouritesViewModel)
                         }
                     }
                 }

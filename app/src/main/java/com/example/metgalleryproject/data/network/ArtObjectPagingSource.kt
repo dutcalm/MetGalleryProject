@@ -36,10 +36,6 @@ class ArtObjectsPagingSource(
 
             val pageIds = ids.subList(startIndex, endIndex)
 
-//            val artObjects = pageIds.mapNotNull { id ->
-//                fetchArtObjectWithRetry(id)
-//            }
-
             val artObjects = coroutineScope {
                 pageIds.map { id ->
                     async {
