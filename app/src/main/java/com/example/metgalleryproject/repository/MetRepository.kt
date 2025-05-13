@@ -1,33 +1,27 @@
 package com.example.metgalleryproject.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.example.metgalleryproject.data.model.ArtObject
 import com.example.metgalleryproject.data.network.MetMuseumApi
+import com.example.metgalleryproject.data.network.SearchPagingSource
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 class MetRepository(private val api: MetMuseumApi) {
 
     private val maxResults = 10
 
-    suspend fun searchArtObjects(query: String): List<ArtObject> {
-        return withContext(Dispatchers.IO) {
-            val response = api.searchArtObjects(query)
-            val objectIds = response.objectIDs ?: emptyList()
 
-            println("Search Response IDs: $objectIds")
-
-            objectIds.take(maxResults).mapNotNull { id ->
-                try {
-                    val artObject = api.getArtObjectDetails(id)
-                    println("Art Object: $artObject")
-                    artObject
-                } catch (e: Exception) {
-                    println("Error fetching object $id: ${e.message}")
-                    null
-                }
-            }
-        }
+    fun searchArtObjects(query: String): Flow<PagingData<ArtObject>> {
+        return Pager(
+            config = PagingConfig(pageSize = 20),
+            pagingSourceFactory = { SearchPagingSource(api, query) }
+        ).flow
     }
+
 
     suspend fun getArtObjectDetails(objectId: Int): ArtObject? {
         return withContext(Dispatchers.IO) {

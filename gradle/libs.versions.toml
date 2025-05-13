@@ -3,11 +3,13 @@ agp = "8.9.2"
 androidGradlePlugin = "8.2.2"
 coilCompose = "2.4.0"
 converterMoshi = "2.9.0"
+foundation = "1.8.1"
 googleHiltAndroidVersion = "2.41"
 gradle = "8.2.2"
 hiltAndroid = "2.44"
 hiltAndroidGradlePlugin = "2.51"
 hiltCompiler = "2.44"
+hiltNavigationCompose = "1.2.0"
 kotlin = "2.0.21"
 coreKtx = "1.16.0"
 junit = "4.13.2"
@@ -20,6 +22,7 @@ lifecycleLivedataKtx = "2.9.0"
 lifecycleRuntimeKtx = "2.9.0"
 activityCompose = "1.10.1"
 composeBom = "2025.05.00"
+lifecycleViewmodelCompose = "2.9.0"
 lifecycleViewmodelKtx = "2.9.0"
 loggingInterceptor = "4.9.0"
 material = "1.8.1"
@@ -33,7 +36,10 @@ moshiKotlinVersion = "1.15.1"
 navigationCompose = "2.9.0"
 navigationComposeVersion = "2.9.0"
 okhttp = "4.11.0"
+pagingCompose = "3.3.6"
 retrofit = "2.11.0"
+runtime = "1.8.1"
+runtimeLivedata = "1.8.1"
 ui = "1.8.1"
 uiToolingPreview = "1.8.1"
 hilt = "2.51"
@@ -41,12 +47,21 @@ hilt = "2.51"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundation" }
+androidx-foundation-layout = { module = "androidx.compose.foundation:foundation-layout", version.ref = "foundation" }
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 androidx-material = { module = "androidx.compose.material:material", version.ref = "material" }
 androidx-material-icons-core = { module = "androidx.compose.material:material-icons-core", version.ref = "materialIconsCore" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-navigation-compose-v260 = { module = "androidx.navigation:navigation-compose", version.ref = "navigationComposeVersion" }
+androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingCompose" }
+androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "pagingCompose" }
+androidx-paging-runtime-ktx = { module = "androidx.paging:paging-runtime-ktx", version.ref = "pagingCompose" }
+androidx-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "runtime" }
+androidx-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "runtimeLivedata" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 com-google-dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "googleHiltAndroidVersion" }
 converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "converterMoshi" }

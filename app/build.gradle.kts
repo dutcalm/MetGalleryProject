@@ -40,6 +40,14 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.foundation)
+    implementation(libs.androidx.foundation.layout)
+    implementation(libs.androidx.runtime)
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.paging.runtime.ktx)
+    implementation(libs.androidx.paging.compose)
+    implementation(libs.androidx.paging.runtime)
     implementation(libs.moshi.kotlin.v1151)
     implementation(libs.okhttp)
     implementation(libs.kotlinx.coroutines.core)

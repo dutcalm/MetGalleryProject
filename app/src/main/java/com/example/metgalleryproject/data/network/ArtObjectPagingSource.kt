@@ -3,13 +3,14 @@ package com.example.metgalleryproject.data.network
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.metgalleryproject.data.model.ArtObject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 
-class SearchPagingSource(
+class ArtObjectsPagingSource(
     private val api: MetMuseumApi,
-    private val query: String
 ) : PagingSource<Int, ArtObject>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ArtObject> {
@@ -17,7 +18,9 @@ class SearchPagingSource(
         val pageSize = params.loadSize
 
         return try {
-            val response = api.searchArtObjects(query)
+            val response = withContext(Dispatchers.IO) {
+                api.searchArtObjects("art")
+            }
             val ids = response.objectIDs ?: emptyList()
 
             val startIndex = (page - 1) * pageSize
@@ -33,6 +36,10 @@ class SearchPagingSource(
 
             val pageIds = ids.subList(startIndex, endIndex)
 
+//            val artObjects = pageIds.mapNotNull { id ->
+//                fetchArtObjectWithRetry(id)
+//            }
+
             val artObjects = coroutineScope {
                 pageIds.map { id ->
                     async {
@@ -43,12 +50,6 @@ class SearchPagingSource(
                         }
                     }
                 }.awaitAll().filterNotNull()
-                    .filter {
-                        it.title.contains(query, ignoreCase = true) || it.artist.contains(
-                            query,
-                            ignoreCase = true
-                        )
-                    }
                     .filter { artObject ->
                         !artObject.imageUrl.isNullOrEmpty()
                     }
@@ -64,6 +65,24 @@ class SearchPagingSource(
             LoadResult.Error(e)
         }
     }
+
+    private suspend fun fetchArtObjectWithRetry(id: Int, maxRetries: Int = 3): ArtObject? {
+        var currentAttempt = 0
+        while (currentAttempt < maxRetries) {
+            try {
+                return withContext(Dispatchers.IO) {
+                    api.getArtObjectDetails(id)
+                }
+            } catch (e: Exception) {
+                currentAttempt++
+                if (currentAttempt >= maxRetries) {
+                    return null
+                }
+            }
+        }
+        return null
+    }
+
     override fun getRefreshKey(state: PagingState<Int, ArtObject>): Int? {
         return state.anchorPosition?.let { position ->
             state.closestPageToPosition(position)?.prevKey?.plus(1)
@@ -71,4 +90,3 @@ class SearchPagingSource(
         }
     }
 }
-

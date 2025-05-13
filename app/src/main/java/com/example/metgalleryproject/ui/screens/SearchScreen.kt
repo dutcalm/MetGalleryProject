@@ -10,13 +10,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -24,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.metgalleryproject.ui.components.SearchButton
 import com.example.metgalleryproject.viewmodel.FavouritesViewModel
 import com.example.metgalleryproject.viewmodel.SearchViewModel
@@ -31,9 +30,13 @@ import com.example.metgalleryproject.viewmodel.SearchViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun SearchScreen(navController: NavController, viewModel: SearchViewModel, favouritesViewModel: FavouritesViewModel) {
+fun SearchScreen(
+    navController: NavController,
+    viewModel: SearchViewModel,
+    favouritesViewModel: FavouritesViewModel
+) {
     val searchQuery = remember { mutableStateOf("") }
-    val artObjects = viewModel.artObjects.collectAsState().value
+    val searchResults = viewModel.searchResults.collectAsLazyPagingItems()
 
     Column(modifier = Modifier.fillMaxSize()) {
         Row(
@@ -55,18 +58,19 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel, favou
 
             SearchButton(
                 onClick = {
-                    viewModel.searchArtworks(searchQuery.value)
+                    viewModel.search(searchQuery.value)
                 },
             )
         }
 
-            Column(modifier = Modifier.fillMaxSize()) {
-            LazyColumn(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = 16.dp, vertical = 0.dp)
-            ) {
-                items(artObjects) { art ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
+        ) {
+            items(searchResults.itemCount) { index ->
+                val art = searchResults[index]
+                if (art != null) {
                     ArtItem(
                         art = art,
                         navController = navController,
@@ -77,6 +81,22 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel, favou
                         thickness = 1.dp,
                         modifier = Modifier.padding(vertical = 4.dp)
                     )
+                }
+            }
+
+            searchResults.apply {
+                when {
+                    loadState.refresh is androidx.paging.LoadState.Loading ||
+                            loadState.append is androidx.paging.LoadState.Loading -> {
+                        item {
+                            Text("Loading...", modifier = Modifier.padding(16.dp))
+                        }
+                    }
+                    loadState.refresh is androidx.paging.LoadState.Error -> {
+                        item {
+                            Text("Error loading data", color = Color.Red, modifier = Modifier.padding(16.dp))
+                        }
+                    }
                 }
             }
         }
