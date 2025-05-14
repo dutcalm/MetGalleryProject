@@ -62,7 +62,7 @@ fun DetailsScreen(artId: Int, viewModel: DetailsViewModel = viewModel(), favouri
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(16.dp, 0.dp)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -74,10 +74,10 @@ fun DetailsScreen(artId: Int, viewModel: DetailsViewModel = viewModel(), favouri
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(min = 1.dp)
-                    .padding(top = 12.dp)
+                    .padding(top = 23.dp)
             )
 
-            Column(modifier = Modifier.padding(top = 16.dp)) {
+            Column(modifier = Modifier.padding(0.dp, 16.dp)) {
 
                 Row(
                     modifier = Modifier.fillMaxWidth()

@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 fun CustomLoadingIndicator(
     modifier: Modifier = Modifier
         .fillMaxWidth(0.8f)
-        .height(80.dp)
+        .height(600.dp)
 ) {
     var currentProgress by remember { mutableFloatStateOf(0f) }
     val scope = rememberCoroutineScope()
@@ -52,7 +52,7 @@ fun CustomLoadingIndicator(
             Text(
                 text = "Loading...",
                 style = MaterialTheme.typography.titleMedium,
-                color = Color.White
+                color = Color.Gray
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -62,8 +62,8 @@ fun CustomLoadingIndicator(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(10.dp),
-                color = Color.White,
-                trackColor = Color.LightGray
+                color = Color.Gray,
+                trackColor = Color.DarkGray
             )
         }
     }

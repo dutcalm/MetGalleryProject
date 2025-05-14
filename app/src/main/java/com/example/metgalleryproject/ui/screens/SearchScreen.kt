@@ -107,7 +107,7 @@ fun SearchScreen(
                     Text(
                         "No results found",
                         color = Color.Gray,
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.padding(16.dp, 275.dp, 16.dp, 16.dp)
                     )
                 }
             }
@@ -117,7 +117,7 @@ fun SearchScreen(
                     Text(
                         "An error occurred. Please try again.",
                         color = Color.Red,
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.padding(16.dp, 275.dp, 16.dp, 16.dp)
                     )
                 }
             }

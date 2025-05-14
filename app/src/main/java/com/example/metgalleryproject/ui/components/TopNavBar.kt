@@ -29,7 +29,7 @@ fun TopNavBar() {
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(0.dp, 10.dp),
+                    .padding(top = 17.dp),
             )
         },
 

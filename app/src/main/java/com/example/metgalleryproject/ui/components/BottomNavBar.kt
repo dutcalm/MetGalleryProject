@@ -34,26 +34,26 @@ fun BottomNavBar(navController: NavController) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(90.dp)
-                .padding(8.dp),
+                .height(40.dp)
+                .padding(2.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             IconButton(onClick = { navController.navigate("home") }) {
                 Icon(Icons.Filled.Home, contentDescription = "Home",
                     tint = Color.White,
-                    modifier = Modifier.size(50.dp))
+                    modifier = Modifier.size(32.dp))
             }
 
             IconButton(onClick = { navController.navigate("search") }) {
                 Icon(Icons.Filled.Search, contentDescription = "Search",
                     tint = Color.White,
-                    modifier = Modifier.size(50.dp))
+                    modifier = Modifier.size(32.dp))
             }
 
             IconButton(onClick = { navController.navigate("favourites") }) {
                 Icon(Icons.Filled.Favorite, contentDescription = "Favourites",
                     tint = Color.White,
-                    modifier = Modifier.size(50.dp))
+                    modifier = Modifier.size(32.dp))
             }
         }
     }
