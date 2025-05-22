@@ -5,7 +5,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -55,8 +54,7 @@ fun SearchScreen(
 
     Column(modifier = Modifier.fillMaxSize()) {
         CustomSearchBar(
-            modifier = Modifier.fillMaxWidth()
-                .height(50.dp),
+            modifier = Modifier.fillMaxWidth(),
             query = searchQuery.value,
             onQueryChange = { searchQuery.value = it },
             onSearch = { onSearchClick() },
@@ -74,14 +72,12 @@ fun SearchScreen(
         ) {
             val loadState = searchResults.loadState.refresh
 
-            // Eliminăm afișarea loading-ului
-
             if (showNoResults) {
                 item {
                     Text(
                         "No results found",
                         color = Color.Gray,
-                        modifier = Modifier.padding(16.dp, 275.dp, 16.dp, 16.dp)
+                        modifier = Modifier.padding(16.dp)
                     )
                 }
             }
@@ -91,7 +87,7 @@ fun SearchScreen(
                     Text(
                         "An error occurred. Please try again.",
                         color = Color.Red,
-                        modifier = Modifier.padding(16.dp, 275.dp, 16.dp, 16.dp)
+                        modifier = Modifier.padding(16.dp)
                     )
                 }
             }

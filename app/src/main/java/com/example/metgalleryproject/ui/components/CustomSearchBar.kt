@@ -53,7 +53,6 @@ fun CustomSearchBar(
     ) {
         SearchBar(
             modifier = Modifier
-                .fillMaxSize()
                 .align(Alignment.TopCenter)
                 .padding(top = 0.dp),
             colors = SearchBarDefaults.colors(
@@ -79,9 +78,13 @@ fun CustomSearchBar(
             expanded = expanded,
             onExpandedChange = { expanded = it },
         ) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize()
-            ) {
+            if (searchResults.isEmpty() && query.isNotBlank()) {
+                Text(
+                    "No results found",
+                    color = Color.Gray,
+                    modifier = Modifier.padding(16.dp)
+                )
+            } else LazyColumn{
                 items(searchResults.size) { index ->
                     val art = searchResults[index]
                     if (art != null) {

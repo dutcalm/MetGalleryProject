@@ -40,6 +40,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.foundation)
     implementation(libs.androidx.foundation.layout)
     implementation(libs.androidx.runtime)
