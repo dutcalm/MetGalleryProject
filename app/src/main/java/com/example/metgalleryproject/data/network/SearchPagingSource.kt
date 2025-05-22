@@ -49,9 +49,6 @@ class SearchPagingSource(
                             ignoreCase = true
                         )
                     }
-                    .filter { artObject ->
-                        !artObject.imageUrl.isNullOrEmpty()
-                    }
 
             }
 

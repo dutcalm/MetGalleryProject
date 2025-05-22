@@ -3,15 +3,19 @@ package com.example.metgalleryproject.ui.screens
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -132,35 +136,56 @@ fun ErrorItem(message: String) {
 
 @Composable
 fun ArtItem(art: ArtObject, navController: NavController, viewModel: FavouritesViewModel) {
-    val painter = rememberAsyncImagePainter(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(art.imageUrl)
-            .crossfade(true)
-            .size(300)
-            .scale(Scale.FILL)
-            .build()
-    )
+    val painter = if (!art.imageUrl.isNullOrBlank()) {
+        rememberAsyncImagePainter(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(art.imageUrl)
+                .crossfade(true)
+                .size(300)
+                .scale(Scale.FILL)
+                .build()
+        )
+    } else {
+        null
+    }
 
-    Column(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 24.dp, bottom = 8.dp, start = 5.dp, end = 5.dp)
+            .padding(vertical = 12.dp, horizontal = 8.dp)
             .clickable {
                 navController.navigate("details/${art.id}")
-            }
+            },
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            painter = painter,
-            contentDescription = art.title,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-        )
 
-        Column(modifier = Modifier.padding(vertical = 8.dp)) {
+        if (painter != null) {
+            Image(
+                painter = painter,
+                contentDescription = art.title,
+                modifier = Modifier
+                    .weight(0.7f)
+                    .fillMaxHeight()
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .weight(0.7f)
+                    .height(100.dp)
+                    .background(Color.LightGray)
+                    .border(1.dp, Color.Gray)
+            )
+        }
+
+
+        Spacer(modifier = Modifier.width(12.dp))
+
+        Column(
+            modifier = Modifier.weight(1.3f)
+        ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
                     text = art.title,
