@@ -2,8 +2,10 @@ package com.example.metgalleryproject.ui.screens
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,26 +39,17 @@ fun SearchScreen(
     val searchQuery = remember { mutableStateOf("") }
     val searchResults = viewModel.searchResults.collectAsLazyPagingItems()
     val hasSearched = remember { mutableStateOf(false) }
-    val hasStartedLoading = remember { mutableStateOf(false) }
 
     fun onSearchClick() {
         hasSearched.value = true
-        hasStartedLoading.value = false  // resetează la o nouă căutare
         viewModel.search(searchQuery.value)
         searchResults.refresh()
-    }
-
-    val loadState = searchResults.loadState.refresh
-
-    if (loadState is LoadState.Loading) {
-        hasStartedLoading.value = true
     }
 
     val showNoResults by remember {
         derivedStateOf {
             hasSearched.value &&
-                    hasStartedLoading.value &&
-                    loadState is LoadState.NotLoading &&
+                    searchResults.loadState.refresh is LoadState.NotLoading &&
                     searchResults.itemCount == 0
         }
     }
@@ -74,51 +67,79 @@ fun SearchScreen(
                 .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            val loadState = searchResults.loadState.refresh
 
-            if (loadState is LoadState.Loading) {
-                item {
-                    CustomLoadingIndicator()
-                }
-            }
-
-            if (showNoResults) {
-                item {
-                    Text(
-                        "No results found",
-                        color = Color.Gray,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
-            }
-
-            if (loadState is LoadState.Error && hasSearched.value) {
-                item {
-                    Text(
-                        "An error occurred. Please try again.",
-                        color = Color.Red,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
-            }
-
-            if (loadState is LoadState.NotLoading && searchResults.itemCount > 0) {
-                items(searchResults.itemCount) { index ->
-                    val art = searchResults[index]
-                    if (art != null) {
-                        ArtItem(
-                            art = art,
-                            navController = navController,
-                            viewModel = favouritesViewModel
-                        )
-                        HorizontalDivider(
-                            color = Color.LightGray,
-                            thickness = 1.dp,
-                            modifier = Modifier.padding(vertical = 4.dp)
-                        )
+            when (loadState) {
+                is LoadState.Loading -> {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillParentMaxSize()
+                                .padding(top = 32.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CustomLoadingIndicator()
+                        }
                     }
                 }
+
+                is LoadState.Error -> {
+                    item {
+                        ErrorItem("Loading error: ${loadState.error.localizedMessage}")
+                    }
+                }
+
+                is LoadState.NotLoading -> {
+                    if (showNoResults) {
+                        item {
+                            Text(
+                                "No results found",
+                                color = Color.Gray,
+                                modifier = Modifier.padding(16.dp)
+                            )
+                        }
+                    } else {
+                        items(searchResults.itemCount) { index ->
+                            val art = searchResults[index]
+                            if (art != null) {
+                                ArtItem(
+                                    art = art,
+                                    navController = navController,
+                                    viewModel = favouritesViewModel
+                                )
+                                HorizontalDivider(
+                                    color = Color.LightGray,
+                                    thickness = 1.dp,
+                                    modifier = Modifier.padding(vertical = 4.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            when (val appendState = searchResults.loadState.append) {
+                is LoadState.Loading -> {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CustomLoadingIndicator()
+                        }
+                    }
+                }
+
+                is LoadState.Error -> {
+                    item {
+                        ErrorItem("Loading error: ${appendState.error.localizedMessage}")
+                    }
+                }
+
+                else -> {}
             }
         }
     }
 }
-

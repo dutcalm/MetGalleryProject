@@ -35,7 +35,6 @@ fun FavouritesTopBar() {
         modifier = Modifier
             .fillMaxWidth()
             .height(55.dp)
-//            .windowInsetsPadding(WindowInsets.statusBars)
             .padding(top = 0.dp),
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color(0xFF799485)
