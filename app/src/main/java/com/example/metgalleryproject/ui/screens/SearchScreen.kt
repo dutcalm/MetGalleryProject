@@ -42,7 +42,6 @@ fun SearchScreen(
     val hasSearchBeenTriggered = remember { mutableStateOf(false) }
     val hasStartedLoading = remember { mutableStateOf(false) }
 
-    // Declanșăm căutarea
     fun onSearchClick() {
         if (searchQuery.value.isNotBlank()) {
             viewModel.search(searchQuery.value)
@@ -50,7 +49,6 @@ fun SearchScreen(
         }
     }
 
-    // Observăm dacă a început efectiv încărcarea
     LaunchedEffect(searchResults.loadState.refresh) {
         if (hasSearchBeenTriggered.value && searchResults.loadState.refresh is LoadState.Loading) {
             hasStartedLoading.value = true
@@ -139,7 +137,6 @@ fun SearchScreen(
                 }
             }
 
-            // append (next page) loading/error
             when (val appendState = searchResults.loadState.append) {
                 is LoadState.Loading -> {
                     item {

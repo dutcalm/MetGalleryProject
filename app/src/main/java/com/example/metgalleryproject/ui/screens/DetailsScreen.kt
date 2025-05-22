@@ -41,6 +41,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.metgalleryproject.ui.components.FavouritesButton
+import com.example.metgalleryproject.ui.components.TopNavBar
 import com.example.metgalleryproject.viewmodel.DetailsViewModel
 import com.example.metgalleryproject.viewmodel.FavouritesViewModel
 
@@ -58,6 +59,8 @@ fun DetailsScreen(artId: Int, viewModel: DetailsViewModel = viewModel(), favouri
     val openDialog = remember { mutableStateOf(false) }
     val selectedImageIndex = remember { mutableStateOf(0) }
 
+    Column {
+        TopNavBar()
     artDetails?.let { art ->
         Column(
             modifier = Modifier
@@ -66,7 +69,6 @@ fun DetailsScreen(artId: Int, viewModel: DetailsViewModel = viewModel(), favouri
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             AsyncImage(
                 model = art.imageUrl,
                 contentDescription = art.title,
@@ -146,7 +148,8 @@ fun DetailsScreen(artId: Int, viewModel: DetailsViewModel = viewModel(), favouri
                                         .height(150.dp)
                                         .fillMaxWidth()
                                         .clickable {
-                                            selectedImageIndex.value = art.additionalImages.indexOf(imageUrl)
+                                            selectedImageIndex.value =
+                                                art.additionalImages.indexOf(imageUrl)
                                             openDialog.value = true
                                         }
                                 )
@@ -155,7 +158,7 @@ fun DetailsScreen(artId: Int, viewModel: DetailsViewModel = viewModel(), favouri
                     }
                 }
             }
-
+        }
             if (openDialog.value) {
                 FullScreenImageDialog(
                     imageUrls = art.additionalImages,
