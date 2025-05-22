@@ -32,12 +32,12 @@ fun TopNavBar() {
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 20.dp)
+                    .padding(top = 17.dp)
             )
         },
         modifier = Modifier
             .fillMaxWidth()
-            .height(85.dp)
+            .height(55.dp)
             .windowInsetsPadding(WindowInsets.statusBars)
             .padding(top = 0.dp),
         colors = TopAppBarDefaults.topAppBarColors(

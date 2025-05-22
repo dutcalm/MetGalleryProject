@@ -4,7 +4,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -54,14 +53,13 @@ fun SearchScreen(
 
     Column(modifier = Modifier.fillMaxSize()) {
         CustomSearchBar(
-            modifier = Modifier.fillMaxWidth(),
             query = searchQuery.value,
             onQueryChange = { searchQuery.value = it },
-            onSearch = { onSearchClick() },
-            searchResults = searchResults.itemSnapshotList.items,
-            navController = navController,
-            favouritesViewModel = favouritesViewModel,
-            placeholder = { Text("Search for art") }
+            onSearchClick = {
+                hasSearched.value = true
+                viewModel.search(searchQuery.value)
+                searchResults.refresh()
+            }
         )
 
         LazyColumn(
