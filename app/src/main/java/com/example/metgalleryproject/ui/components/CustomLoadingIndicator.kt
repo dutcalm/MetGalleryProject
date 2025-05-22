@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 fun CustomLoadingIndicator(
     modifier: Modifier = Modifier
         .fillMaxWidth(0.8f)
-        .height(600.dp)
+        .height(750.dp)
 ) {
     var currentProgress by remember { mutableFloatStateOf(0f) }
     val scope = rememberCoroutineScope()

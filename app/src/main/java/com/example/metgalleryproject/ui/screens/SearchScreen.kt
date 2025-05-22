@@ -3,8 +3,6 @@ package com.example.metgalleryproject.ui.screens
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,9 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,8 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.metgalleryproject.ui.components.CustomLoadingIndicator
-import com.example.metgalleryproject.ui.components.SearchButton
+import com.example.metgalleryproject.ui.components.CustomSearchBar
 import com.example.metgalleryproject.viewmodel.FavouritesViewModel
 import com.example.metgalleryproject.viewmodel.SearchViewModel
 
@@ -43,50 +38,33 @@ fun SearchScreen(
     val searchQuery = remember { mutableStateOf("") }
     val searchResults = viewModel.searchResults.collectAsLazyPagingItems()
     val hasSearched = remember { mutableStateOf(false) }
-    val isFirstSearchInProgress = remember { mutableStateOf(false) }
 
     fun onSearchClick() {
         hasSearched.value = true
-        isFirstSearchInProgress.value = true
         viewModel.search(searchQuery.value)
         searchResults.refresh()
-    }
-
-    LaunchedEffect(searchResults.loadState.refresh) {
-        if (searchResults.loadState.refresh is LoadState.Loading) {
-            isFirstSearchInProgress.value = false
-        }
     }
 
     val showNoResults by remember {
         derivedStateOf {
             hasSearched.value &&
-                    !isFirstSearchInProgress.value &&
                     searchResults.loadState.refresh is LoadState.NotLoading &&
                     searchResults.itemCount == 0
         }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+        CustomSearchBar(
+            modifier = Modifier.fillMaxWidth()
                 .height(50.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            TextField(
-                value = searchQuery.value,
-                onValueChange = { searchQuery.value = it },
-                label = { Text("Search for art") },
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-                singleLine = true
-            )
-
-            SearchButton(onClick = { onSearchClick() })
-        }
+            query = searchQuery.value,
+            onQueryChange = { searchQuery.value = it },
+            onSearch = { onSearchClick() },
+            searchResults = searchResults.itemSnapshotList.items,
+            navController = navController,
+            favouritesViewModel = favouritesViewModel,
+            placeholder = { Text("Search for art") }
+        )
 
         LazyColumn(
             modifier = Modifier
@@ -96,11 +74,7 @@ fun SearchScreen(
         ) {
             val loadState = searchResults.loadState.refresh
 
-            if (loadState is LoadState.Loading && hasSearched.value) {
-                item {
-                    CustomLoadingIndicator()
-                }
-            }
+            // Eliminăm afișarea loading-ului
 
             if (showNoResults) {
                 item {
