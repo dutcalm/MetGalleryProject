@@ -36,6 +36,7 @@ import coil.size.Scale
 import com.example.metgalleryproject.data.model.ArtObject
 import com.example.metgalleryproject.ui.components.CustomLoadingIndicator
 import com.example.metgalleryproject.ui.components.FavouritesButton
+import com.example.metgalleryproject.ui.components.TopNavBar
 import com.example.metgalleryproject.viewmodel.FavouritesViewModel
 import com.example.metgalleryproject.viewmodel.HomeViewModel
 
@@ -49,6 +50,7 @@ fun HomeScreen(
     val lazyPagingItems = viewModel.artObjectsFlow.collectAsLazyPagingItems()
 
     Column(modifier = Modifier.fillMaxSize()) {
+        TopNavBar()
         LazyColumn(
             modifier = Modifier
                 .weight(1f)

@@ -23,7 +23,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.metgalleryproject.data.network.MetMuseumApiService
 import com.example.metgalleryproject.repository.MetRepository
 import com.example.metgalleryproject.ui.components.BottomNavBar
-import com.example.metgalleryproject.ui.components.TopNavBar
 import com.example.metgalleryproject.ui.screens.DetailsScreen
 import com.example.metgalleryproject.ui.screens.FavouritesScreen
 import com.example.metgalleryproject.ui.screens.HomeScreen
@@ -58,7 +57,6 @@ class MainActivity : ComponentActivity() {
                     val detailsViewModelFactory = DetailsViewModelFactory(repository)
 
                     Scaffold(
-                        topBar = { TopNavBar() },
                         modifier = Modifier.fillMaxSize(),
                         bottomBar = {
                             Column {

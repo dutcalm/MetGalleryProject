@@ -7,7 +7,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -32,21 +31,21 @@ fun CustomSearchBar(
         modifier = modifier.fillMaxWidth(),
         placeholder = { Text("Search item", color = Color.LightGray) },
         colors = TextFieldDefaults.colors(
-            focusedContainerColor = MaterialTheme.colorScheme.background,
-            unfocusedContainerColor = MaterialTheme.colorScheme.background,
-            focusedTextColor = Color.LightGray,
-            unfocusedTextColor = Color.LightGray,
-            cursorColor = Color.LightGray,
+            focusedContainerColor = Color(0xFF799485),
+            unfocusedContainerColor = Color(0xFF799485),
+            focusedTextColor = Color.White,
+            unfocusedTextColor = Color.White,
+            cursorColor = Color.White,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            focusedLeadingIconColor = Color.LightGray,
-            unfocusedLeadingIconColor = Color.LightGray,
-            focusedTrailingIconColor = Color.LightGray,
-            unfocusedTrailingIconColor = Color.LightGray,
-            focusedLabelColor = Color.LightGray,
-            unfocusedLabelColor = Color.LightGray,
-            focusedPlaceholderColor = Color.LightGray,
-            unfocusedPlaceholderColor = Color.LightGray,
+            focusedLeadingIconColor = Color.White,
+            unfocusedLeadingIconColor = Color.White,
+            focusedTrailingIconColor = Color.White,
+            unfocusedTrailingIconColor = Color.White,
+            focusedLabelColor = Color.White,
+            unfocusedLabelColor = Color.White,
+            focusedPlaceholderColor = Color.White,
+            unfocusedPlaceholderColor = Color.White,
         ),
         trailingIcon = {
             IconButton(onClick = onSearchClick) {
@@ -58,6 +57,9 @@ fun CustomSearchBar(
             }
         }
     )
-    HorizontalDivider(color = Color.LightGray, thickness = 1.dp)
+    HorizontalDivider(
+        color = Color.White.copy(alpha = 0.15f),
+        thickness = 1.dp
+    )
 }
 

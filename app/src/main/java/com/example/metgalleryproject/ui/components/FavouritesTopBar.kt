@@ -17,11 +17,11 @@ import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopNavBar() {
+fun FavouritesTopBar() {
     TopAppBar(
         title = {
             Text(
-                text = "Met Gallery",
+                text = "Favourite Artworks",
                 style = MaterialTheme.typography.bodyLarge.copy(
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
@@ -35,6 +35,7 @@ fun TopNavBar() {
         modifier = Modifier
             .fillMaxWidth()
             .height(55.dp)
+//            .windowInsetsPadding(WindowInsets.statusBars)
             .padding(top = 0.dp),
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color(0xFF799485)
