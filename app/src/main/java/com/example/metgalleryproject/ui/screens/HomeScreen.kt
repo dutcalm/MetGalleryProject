@@ -132,7 +132,7 @@ fun ErrorItem(message: String) {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(message, color = Color.Red)
+        Text(message, color = Color.Gray)
     }
 }
 

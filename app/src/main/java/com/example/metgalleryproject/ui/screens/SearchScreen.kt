@@ -12,6 +12,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,17 +39,35 @@ fun SearchScreen(
 ) {
     val searchQuery = remember { mutableStateOf("") }
     val searchResults = viewModel.searchResults.collectAsLazyPagingItems()
-    val hasSearched = remember { mutableStateOf(false) }
+    val hasSearchBeenTriggered = remember { mutableStateOf(false) }
+    val hasStartedLoading = remember { mutableStateOf(false) }
 
+    // Declanșăm căutarea
     fun onSearchClick() {
-        hasSearched.value = true
-        viewModel.search(searchQuery.value)
-        searchResults.refresh()
+        if (searchQuery.value.isNotBlank()) {
+            viewModel.search(searchQuery.value)
+            hasSearchBeenTriggered.value = true
+        }
+    }
+
+    // Observăm dacă a început efectiv încărcarea
+    LaunchedEffect(searchResults.loadState.refresh) {
+        if (hasSearchBeenTriggered.value && searchResults.loadState.refresh is LoadState.Loading) {
+            hasStartedLoading.value = true
+        }
+    }
+
+    val showInitialLoading by remember {
+        derivedStateOf {
+            hasStartedLoading.value &&
+                    searchResults.loadState.refresh is LoadState.Loading &&
+                    searchResults.itemCount == 0
+        }
     }
 
     val showNoResults by remember {
         derivedStateOf {
-            hasSearched.value &&
+            hasStartedLoading.value &&
                     searchResults.loadState.refresh is LoadState.NotLoading &&
                     searchResults.itemCount == 0
         }
@@ -67,10 +86,8 @@ fun SearchScreen(
                 .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val loadState = searchResults.loadState.refresh
-
-            when (loadState) {
-                is LoadState.Loading -> {
+            when {
+                showInitialLoading -> {
                     item {
                         Box(
                             modifier = Modifier
@@ -83,41 +100,46 @@ fun SearchScreen(
                     }
                 }
 
-                is LoadState.Error -> {
+                showNoResults -> {
                     item {
-                        ErrorItem("Loading error: ${loadState.error.localizedMessage}")
+                        Text(
+                            "No results found",
+                            color = Color.Gray,
+                            modifier = Modifier.padding(16.dp)
+                        )
                     }
                 }
 
-                is LoadState.NotLoading -> {
-                    if (showNoResults) {
-                        item {
-                            Text(
-                                "No results found",
-                                color = Color.Gray,
-                                modifier = Modifier.padding(16.dp)
+                searchResults.loadState.refresh is LoadState.Error -> {
+                    val error = (searchResults.loadState.refresh as LoadState.Error).error
+                    item {
+                        ErrorItem("Loading error: ${error.localizedMessage}")
+                    }
+                }
+
+                else -> {
+                    items(
+                        count = searchResults.itemCount,
+                        key = { index -> searchResults.peek(index)?.id ?: index }
+                    ) { index ->
+                        val art = searchResults[index]
+                        if (art != null) {
+                            ArtItem(
+                                art = art,
+                                navController = navController,
+                                viewModel = favouritesViewModel
                             )
-                        }
-                    } else {
-                        items(searchResults.itemCount) { index ->
-                            val art = searchResults[index]
-                            if (art != null) {
-                                ArtItem(
-                                    art = art,
-                                    navController = navController,
-                                    viewModel = favouritesViewModel
-                                )
-                                HorizontalDivider(
-                                    color = Color.LightGray,
-                                    thickness = 1.dp,
-                                    modifier = Modifier.padding(vertical = 4.dp)
-                                )
-                            }
+                            HorizontalDivider(
+                                color = Color.LightGray,
+                                thickness = 1.dp,
+                                modifier = Modifier.padding(vertical = 4.dp)
+                            )
                         }
                     }
                 }
             }
 
+            // append (next page) loading/error
             when (val appendState = searchResults.loadState.append) {
                 is LoadState.Loading -> {
                     item {
