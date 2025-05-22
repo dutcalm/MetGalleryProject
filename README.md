@@ -1,6 +1,5 @@
 # MetGalleryProject
-MVVM Structure - only created the main files and folders of the application
 
-ui + fave button - created the ui for the top and bottom navigation bars, home screen and the favourites button. Also, added the functional part of the button and the code for ArtObject. Updated MainActivity to include home screen as the starting point when the app is opened.
+This project represents an Android mobile application for the Metropolitian Museum of Arts. It allows users to serach through the museum's gallery of artworks and save their favourite pieces.
 
-almost done - implemented the rest of the ui and the functional part of the app, added the permission to acces internet. At this point, the app imports artworks from the API. Each artwork has a details screen, with additional info and other related images, if available. The artworks can be accesed from the home page or from the search page. Also, they can be added to or deleted from favourites and therefore can be seen in the favourites screen. The main issue remains the fact that it takes about a minute for the images to load on home screen, when the app is launched, and on the search screen, after searching for an artwork.
+The application is written in Kotlin and follows the MVVM architecture. It uses Retrofit for integrating the Met Museum API with Moshi handling serialization and deserialization. For optimal display of results, the app uses Paging Compose and LazyColumn. The UI is built with Jetpack Compose and images are loaded using COIL.
