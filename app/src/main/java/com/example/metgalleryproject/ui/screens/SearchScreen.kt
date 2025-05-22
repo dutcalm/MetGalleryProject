@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.metgalleryproject.ui.components.CustomLoadingIndicator
 import com.example.metgalleryproject.ui.components.CustomSearchBar
 import com.example.metgalleryproject.viewmodel.FavouritesViewModel
 import com.example.metgalleryproject.viewmodel.SearchViewModel
@@ -36,17 +37,26 @@ fun SearchScreen(
     val searchQuery = remember { mutableStateOf("") }
     val searchResults = viewModel.searchResults.collectAsLazyPagingItems()
     val hasSearched = remember { mutableStateOf(false) }
+    val hasStartedLoading = remember { mutableStateOf(false) }
 
     fun onSearchClick() {
         hasSearched.value = true
+        hasStartedLoading.value = false  // resetează la o nouă căutare
         viewModel.search(searchQuery.value)
         searchResults.refresh()
+    }
+
+    val loadState = searchResults.loadState.refresh
+
+    if (loadState is LoadState.Loading) {
+        hasStartedLoading.value = true
     }
 
     val showNoResults by remember {
         derivedStateOf {
             hasSearched.value &&
-                    searchResults.loadState.refresh is LoadState.NotLoading &&
+                    hasStartedLoading.value &&
+                    loadState is LoadState.NotLoading &&
                     searchResults.itemCount == 0
         }
     }
@@ -55,11 +65,7 @@ fun SearchScreen(
         CustomSearchBar(
             query = searchQuery.value,
             onQueryChange = { searchQuery.value = it },
-            onSearchClick = {
-                hasSearched.value = true
-                viewModel.search(searchQuery.value)
-                searchResults.refresh()
-            }
+            onSearchClick = { onSearchClick() }
         )
 
         LazyColumn(
@@ -68,7 +74,12 @@ fun SearchScreen(
                 .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val loadState = searchResults.loadState.refresh
+
+            if (loadState is LoadState.Loading) {
+                item {
+                    CustomLoadingIndicator()
+                }
+            }
 
             if (showNoResults) {
                 item {
@@ -110,3 +121,4 @@ fun SearchScreen(
         }
     }
 }
+
