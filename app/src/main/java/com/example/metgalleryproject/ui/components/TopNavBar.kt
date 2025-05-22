@@ -34,7 +34,7 @@ fun TopNavBar() {
         },
         modifier = Modifier
             .fillMaxWidth()
-            .height(55.dp)
+            .height(56.dp)
             .padding(top = 0.dp),
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color(0xFF799485)
