@@ -34,7 +34,7 @@ fun FavouritesButton(
         Icon(
             imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
             contentDescription = if (isFavorite) "Favorite" else "Not Favorite",
-            tint = if (isFavorite) Color(0xFFFF1744) else Color.White,
+            tint = if (isFavorite) Color(0xFFcf78a8) else Color.White,
             modifier = Modifier.size(35.dp)
         )
     }

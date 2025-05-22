@@ -2,6 +2,7 @@ package com.example.metgalleryproject.ui.components
 
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -29,15 +30,18 @@ fun TopNavBar() {
                     fontWeight = FontWeight.Bold,
                     fontSize = 25.sp,
                 ),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp)
             )
         },
         modifier = Modifier
             .fillMaxWidth()
+            .height(85.dp)
             .windowInsetsPadding(WindowInsets.statusBars)
             .padding(top = 0.dp),
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color(0xFF0d47a1)
+            containerColor = Color(0xFF799485)
         )
     )
 }

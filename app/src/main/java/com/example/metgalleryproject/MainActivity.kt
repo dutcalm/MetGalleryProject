@@ -6,10 +6,16 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -36,45 +42,72 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MetGalleryProjectTheme {
+                androidx.compose.foundation.layout.Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background)
+                ) {
+                    val navController = rememberNavController()
+                    val favouritesViewModel: FavouritesViewModel = viewModel()
+                    val homeViewModel: HomeViewModel = viewModel()
 
-                val navController = rememberNavController()
-                val favouritesViewModel: FavouritesViewModel = viewModel()
-                val homeViewModel: HomeViewModel = viewModel()
+                    val repository = MetRepository(MetMuseumApiService.api)
+                    val viewModelFactory = SearchViewModelFactory(repository)
+                    val searchViewModel = viewModels<SearchViewModel> { viewModelFactory }.value
 
-                val repository = MetRepository(MetMuseumApiService.api)
-                val viewModelFactory = SearchViewModelFactory(repository)
-                val searchViewModel = viewModels<SearchViewModel> { viewModelFactory }.value
+                    val detailsViewModelFactory = DetailsViewModelFactory(repository)
 
-                val detailsViewModelFactory = DetailsViewModelFactory(repository)
-
-                Scaffold(
-                    topBar = { TopNavBar() },
-                    modifier = Modifier.fillMaxSize(),
-                    bottomBar = { BottomNavBar(navController = navController) }
-                ) { paddingValues ->
-
-                    NavHost(
-                        navController = navController,
-                        startDestination = "home",
-                                modifier = Modifier.padding(paddingValues)
-                    ) {
-                        composable("home") {
-                            HomeScreen(navController = navController, viewModel = homeViewModel, favouritesViewModel = favouritesViewModel)
+                    Scaffold(
+                        topBar = { TopNavBar() },
+                        modifier = Modifier.fillMaxSize(),
+                        bottomBar = {
+                            Column {
+                                HorizontalDivider(
+                                    color = Color.White.copy(alpha = 0.15f),
+                                    thickness = 1.dp
+                                )
+                                BottomNavBar(navController = navController)
+                            }
                         }
-                        composable("search") {
-                            SearchScreen(navController = navController, viewModel = searchViewModel, favouritesViewModel = favouritesViewModel)
-                        }
-                        composable("favourites") {
-                            FavouritesScreen(navController = navController, viewModel = favouritesViewModel)
-                        }
-                        composable("details/{artId}") { backStackEntry ->
-                            val artId = backStackEntry.arguments?.getString("artId")?.toIntOrNull() ?: 0
-                            val detailsViewModel: DetailsViewModel = viewModel(
-                                factory = DetailsViewModelFactory(repository)
-                            )
-                            detailsViewModel.fetchArtDetails(artId)
-                            DetailsScreen(artId = artId, viewModel = detailsViewModel,
-                                favouritesViewModel = favouritesViewModel)
+                    ) { paddingValues ->
+
+                        NavHost(
+                            navController = navController,
+                            startDestination = "home",
+                            modifier = Modifier.padding(paddingValues)
+                        ) {
+                            composable("home") {
+                                HomeScreen(
+                                    navController = navController,
+                                    viewModel = homeViewModel,
+                                    favouritesViewModel = favouritesViewModel
+                                )
+                            }
+                            composable("search") {
+                                SearchScreen(
+                                    navController = navController,
+                                    viewModel = searchViewModel,
+                                    favouritesViewModel = favouritesViewModel
+                                )
+                            }
+                            composable("favourites") {
+                                FavouritesScreen(
+                                    navController = navController,
+                                    viewModel = favouritesViewModel
+                                )
+                            }
+                            composable("details/{artId}") { backStackEntry ->
+                                val artId =
+                                    backStackEntry.arguments?.getString("artId")?.toIntOrNull() ?: 0
+                                val detailsViewModel: DetailsViewModel = viewModel(
+                                    factory = DetailsViewModelFactory(repository)
+                                )
+                                detailsViewModel.fetchArtDetails(artId)
+                                DetailsScreen(
+                                    artId = artId, viewModel = detailsViewModel,
+                                    favouritesViewModel = favouritesViewModel
+                                )
+                            }
                         }
                     }
                 }

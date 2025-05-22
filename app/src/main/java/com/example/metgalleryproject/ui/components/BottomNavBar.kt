@@ -35,8 +35,8 @@ fun BottomNavBar(navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .height(65.dp),
-        containerColor = Color(0xFF0d47a1),
-        contentColor = Color.White,
+        containerColor = Color(0xFF0B1215),
+        contentColor = Color.White
     ) {
         Row(
             modifier = Modifier
@@ -48,7 +48,7 @@ fun BottomNavBar(navController: NavController) {
                 Icon(
                     Icons.Filled.Home,
                     contentDescription = "Home",
-                    tint = if (currentRoute == "home") Color.Gray else Color.White,
+                    tint = if (currentRoute == "home") Color(0xFF799485) else Color.White,
                     modifier = Modifier.size(32.dp)
                 )
             }
@@ -57,7 +57,7 @@ fun BottomNavBar(navController: NavController) {
                 Icon(
                     Icons.Filled.Search,
                     contentDescription = "Search",
-                    tint = if (currentRoute == "search") Color.Gray else Color.White,
+                    tint = if (currentRoute == "search") Color(0xFF799485) else Color.White,
                     modifier = Modifier.size(32.dp)
                 )
             }
@@ -66,7 +66,7 @@ fun BottomNavBar(navController: NavController) {
                 Icon(
                     Icons.Filled.Favorite,
                     contentDescription = "Favourites",
-                    tint = if (currentRoute == "favourites") Color.Gray else Color.White,
+                    tint = if (currentRoute == "favourites") Color(0xFF799485) else Color.White,
                     modifier = Modifier.size(32.dp)
                 )
             }
