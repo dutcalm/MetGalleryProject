@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -55,7 +56,7 @@ fun SearchScreen(
             onQueryChange = { searchQuery.value = it },
             onSearchClick = {
                 if (searchQuery.value.isNotBlank()) {
-                    viewModel.search(searchQuery.value)
+                    viewModel.search(searchQuery.value.trim())
                     isSearching = true
                     hasLoadedResults = false
                 }
@@ -66,8 +67,7 @@ fun SearchScreen(
             when {
                 isSearching && !hasLoadedResults -> {
                     Box(
-                        modifier = Modifier
-                            .fillMaxSize(),
+                        modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
                         CustomLoadingIndicator()
@@ -87,7 +87,7 @@ fun SearchScreen(
                 searchResults.loadState.refresh is LoadState.Error -> {
                     val error = (searchResults.loadState.refresh as LoadState.Error).error
                     ErrorItem(
-                        message = "Loading error: ${error.localizedMessage}"
+                        message = "Loading error: ${error.localizedMessage ?: "Unknown error"}"
                     )
                 }
 
@@ -100,7 +100,7 @@ fun SearchScreen(
                     ) {
                         items(
                             count = searchResults.itemCount,
-                            key = { index -> searchResults.peek(index)?.id ?: index }
+                            key = { index -> "${searchResults.peek(index)?.id}_${index}" }
                         ) { index ->
                             val art = searchResults[index]
                             if (art != null) {
@@ -121,8 +121,7 @@ fun SearchScreen(
                             is LoadState.Loading -> {
                                 item {
                                     Box(
-                                        modifier = Modifier
-                                            .fillMaxSize(),
+                                        modifier = Modifier.fillMaxWidth(),
                                         contentAlignment = Alignment.Center
                                     ) {
                                         CustomLoadingIndicator()
@@ -133,7 +132,7 @@ fun SearchScreen(
                             is LoadState.Error -> {
                                 item {
                                     ErrorItem(
-                                        message = "Loading error: ${appendState.error.localizedMessage}"
+                                        message = "Loading error: ${appendState.error.localizedMessage ?: "Unknown error"}"
                                     )
                                 }
                             }
@@ -146,4 +145,3 @@ fun SearchScreen(
         }
     }
 }
-
