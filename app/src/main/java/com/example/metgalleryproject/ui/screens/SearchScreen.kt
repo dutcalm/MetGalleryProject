@@ -5,7 +5,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -13,10 +12,10 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,35 +38,14 @@ fun SearchScreen(
 ) {
     val searchQuery = remember { mutableStateOf("") }
     val searchResults = viewModel.searchResults.collectAsLazyPagingItems()
-    val hasSearchBeenTriggered = remember { mutableStateOf(false) }
-    val hasStartedLoading = remember { mutableStateOf(false) }
-
-    fun onSearchClick() {
-        if (searchQuery.value.isNotBlank()) {
-            viewModel.search(searchQuery.value)
-            hasSearchBeenTriggered.value = true
-        }
-    }
+    var isSearching by remember { mutableStateOf(false) }
+    var hasLoadedResults by remember { mutableStateOf(false) }
 
     LaunchedEffect(searchResults.loadState.refresh) {
-        if (hasSearchBeenTriggered.value && searchResults.loadState.refresh is LoadState.Loading) {
-            hasStartedLoading.value = true
-        }
-    }
-
-    val showInitialLoading by remember {
-        derivedStateOf {
-            hasStartedLoading.value &&
-                    searchResults.loadState.refresh is LoadState.Loading &&
-                    searchResults.itemCount == 0
-        }
-    }
-
-    val showNoResults by remember {
-        derivedStateOf {
-            hasStartedLoading.value &&
-                    searchResults.loadState.refresh is LoadState.NotLoading &&
-                    searchResults.itemCount == 0
+        if (searchResults.loadState.refresh is LoadState.Loading) {
+            hasLoadedResults = false
+        } else if (searchResults.loadState.refresh is LoadState.NotLoading) {
+            hasLoadedResults = true
         }
     }
 
@@ -75,90 +53,97 @@ fun SearchScreen(
         CustomSearchBar(
             query = searchQuery.value,
             onQueryChange = { searchQuery.value = it },
-            onSearchClick = { onSearchClick() }
+            onSearchClick = {
+                if (searchQuery.value.isNotBlank()) {
+                    viewModel.search(searchQuery.value)
+                    isSearching = true
+                    hasLoadedResults = false
+                }
+            }
         )
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        Box(modifier = Modifier.fillMaxSize()) {
             when {
-                showInitialLoading -> {
-                    item {
-                        Box(
-                            modifier = Modifier
-                                .fillParentMaxSize()
-                                .padding(top = 32.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CustomLoadingIndicator()
-                        }
+                isSearching && !hasLoadedResults -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CustomLoadingIndicator()
                     }
                 }
 
-                showNoResults -> {
-                    item {
-                        Text(
-                            "No results found",
-                            color = Color.Gray,
-                            modifier = Modifier.padding(16.dp)
-                        )
-                    }
+                isSearching && hasLoadedResults && searchResults.itemCount == 0 -> {
+                    Text(
+                        text = "No results found",
+                        color = Color.Gray,
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .padding(16.dp)
+                    )
                 }
 
                 searchResults.loadState.refresh is LoadState.Error -> {
                     val error = (searchResults.loadState.refresh as LoadState.Error).error
-                    item {
-                        ErrorItem("Loading error: ${error.localizedMessage}")
-                    }
+                    ErrorItem(
+                        message = "Loading error: ${error.localizedMessage}"
+                    )
                 }
 
                 else -> {
-                    items(
-                        count = searchResults.itemCount,
-                        key = { index -> searchResults.peek(index)?.id ?: index }
-                    ) { index ->
-                        val art = searchResults[index]
-                        if (art != null) {
-                            ArtItem(
-                                art = art,
-                                navController = navController,
-                                viewModel = favouritesViewModel
-                            )
-                            HorizontalDivider(
-                                color = Color.LightGray,
-                                thickness = 1.dp,
-                                modifier = Modifier.padding(vertical = 4.dp)
-                            )
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        items(
+                            count = searchResults.itemCount,
+                            key = { index -> searchResults.peek(index)?.id ?: index }
+                        ) { index ->
+                            val art = searchResults[index]
+                            if (art != null) {
+                                ArtItem(
+                                    art = art,
+                                    navController = navController,
+                                    viewModel = favouritesViewModel
+                                )
+                                HorizontalDivider(
+                                    color = Color.LightGray,
+                                    thickness = 1.dp,
+                                    modifier = Modifier.padding(vertical = 4.dp)
+                                )
+                            }
+                        }
+
+                        when (val appendState = searchResults.loadState.append) {
+                            is LoadState.Loading -> {
+                                item {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxSize(),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        CustomLoadingIndicator()
+                                    }
+                                }
+                            }
+
+                            is LoadState.Error -> {
+                                item {
+                                    ErrorItem(
+                                        message = "Loading error: ${appendState.error.localizedMessage}"
+                                    )
+                                }
+                            }
+
+                            else -> Unit
                         }
                     }
                 }
-            }
-
-            when (val appendState = searchResults.loadState.append) {
-                is LoadState.Loading -> {
-                    item {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CustomLoadingIndicator()
-                        }
-                    }
-                }
-
-                is LoadState.Error -> {
-                    item {
-                        ErrorItem("Loading error: ${appendState.error.localizedMessage}")
-                    }
-                }
-
-                else -> {}
             }
         }
     }
 }
+
